@@ -1,3 +1,5 @@
 # ssm
-ssm实现简单CRUD功能
-## 建立数据模型：user和customer表
+功能需求：ssm实现简单CRUD功能
+
+## １．配置springmvc环境
+
