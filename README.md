@@ -1,5 +1,5 @@
 # ssm
-功能需求：ssm实现简单CRUD功能
+功能需求：OA报销系统
 
 ## １．配置springmvc环境
 
