@@ -12,6 +12,6 @@ public interface ClaimVoucherDao {
     void update(ClaimVoucher claimVoucher);
     void delete(int id);
     ClaimVoucher select(int id);
-    List<ClaimVoucher> selectByCreateSn(String sn);
-    List<ClaimVoucher> selectByNextDealSn(String sn);
+    List<ClaimVoucher> selectByCreateSn(String csn);
+    List<ClaimVoucher> selectByNextDealSn(String ndsn);
 }
