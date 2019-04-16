@@ -4,9 +4,11 @@ import com.jaywade.myoa.biz.ClaimVoucherBiz;
 import com.jaywade.myoa.dao.ClaimVoucherDao;
 import com.jaywade.myoa.dao.ClaimVoucherItemDao;
 import com.jaywade.myoa.dao.DealRecordDao;
+import com.jaywade.myoa.dao.EmployeeDao;
 import com.jaywade.myoa.entity.ClaimVoucher;
 import com.jaywade.myoa.entity.ClaimVoucherItem;
 import com.jaywade.myoa.entity.DealRecord;
+import com.jaywade.myoa.entity.Employee;
 import com.jaywade.myoa.global.Contant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -29,6 +31,10 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
     @Autowired
     @Qualifier("dealRecordDao")
     private DealRecordDao dealRecordDao;
+
+    @Autowired
+    @Qualifier("employeeDao")
+    private EmployeeDao employeeDao;
 
     public void save(ClaimVoucher claimVoucher,List<ClaimVoucherItem> items){
         claimVoucher.setCreateTime(new Date());
@@ -80,12 +86,31 @@ public class ClaimVoucherBizImpl implements ClaimVoucherBiz {
         }
         for(ClaimVoucherItem item:items){
             item.setClaimVoucherId(claimVoucher.getId());
-            if(item.getId()>0){
+            if(item.getId() != null && item.getId()>0){
                 claimVoucherItemDao.update(item);
             }else{
                 claimVoucherItemDao.insert(item);
             }
         }
+    }
+
+    public void submit(Integer id){
+        ClaimVoucher claimVoucher = claimVoucherDao.select(id);
+        Employee employee = employeeDao.select(claimVoucher.getCreateSn());
+
+        claimVoucher.setStatus(Contant.CLAIMVOUCHER_SUBMIT);
+        claimVoucher.setNextDealSn(employeeDao.selectByDepartmentAndPost(employee.getDepartmentSn(),Contant.POST_FM).get(0).getSn());
+        claimVoucherDao.update(claimVoucher);
+
+        DealRecord dealRecord = new DealRecord();
+        dealRecord.setDealWay(Contant.DEAL_SUBMIT);
+        dealRecord.setDealSn(employee.getSn());
+        dealRecord.setClaimVoucherId(id);
+        dealRecord.setDealResult(Contant.CLAIMVOUCHER_SUBMIT);
+        dealRecord.setDealTime(new Date());
+        dealRecord.setComment("无");
+        dealRecordDao.insert(dealRecord);
+
     }
 
 }

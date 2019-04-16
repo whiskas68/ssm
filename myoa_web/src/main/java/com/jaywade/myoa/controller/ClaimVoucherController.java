@@ -78,5 +78,10 @@ public class ClaimVoucherController {
         return "redirect:deal";
     }
 
+    @RequestMapping("/submit")
+    public String submit(int id){
+        claimVoucherBiz.submit(id);
+        return "redirect:deal";
+    }
 
 }
