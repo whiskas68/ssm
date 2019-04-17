@@ -20,6 +20,16 @@ public class DealRecord {
 
     private String comment;
 
+    private Employee dealer;
+
+    public Employee getDealer() {
+        return dealer;
+    }
+
+    public void setDealer(Employee dealer) {
+        this.dealer = dealer;
+    }
+
     public Integer getId() {
         return id;
     }

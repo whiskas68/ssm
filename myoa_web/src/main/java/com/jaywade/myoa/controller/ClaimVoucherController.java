@@ -2,6 +2,7 @@ package com.jaywade.myoa.controller;
 
 import com.jaywade.myoa.biz.ClaimVoucherBiz;
 import com.jaywade.myoa.dto.ClaimVoucherInfo;
+import com.jaywade.myoa.entity.DealRecord;
 import com.jaywade.myoa.entity.Employee;
 import com.jaywade.myoa.global.Contant;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +82,25 @@ public class ClaimVoucherController {
     @RequestMapping("/submit")
     public String submit(int id){
         claimVoucherBiz.submit(id);
+        return "redirect:deal";
+    }
+
+    @RequestMapping("/to_check")
+    public String toCheck(int id,Map<String,Object> map){
+        map.put("claimVoucher",claimVoucherBiz.get(id));
+        map.put("items",claimVoucherBiz.getItem((id)));
+        map.put("records",claimVoucherBiz.getRecords(id));
+        DealRecord dealRecord = new DealRecord();
+        dealRecord.setClaimVoucherId(id);
+        map.put("record",dealRecord);
+        return "claim_voucher_check";
+    }
+
+    @RequestMapping("/check")
+    public String check(HttpSession session,DealRecord dealRecord){
+        Employee employee =(Employee) session.getAttribute("employee");
+        dealRecord.setDealSn(employee.getSn());
+        claimVoucherBiz.deal(dealRecord);
         return "redirect:deal";
     }
 
